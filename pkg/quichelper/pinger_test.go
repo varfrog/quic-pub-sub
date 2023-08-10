@@ -22,25 +22,25 @@ func TestPinger(t *testing.T) {
 		g := NewWithT(t)
 
 		// Continuously ping for some time
-		ctx, cancel := context.WithTimeout(context.Background(), pingInterval*5)
+		ctx, cancel := context.WithTimeout(context.Background(), pingInterval*6)
 		defer cancel()
 
 		stream := &mocks.MockStreamForSendingPings{}
 		g.Expect(pinger.SendPings(ctx, stream)).To(Succeed())
 
 		assert.GreaterOrEqual(t, stream.TimesWriteCalled, uint32(5))
-		assert.LessOrEqual(t, stream.TimesReadCalled, uint32(6))
+		assert.GreaterOrEqual(t, stream.TimesReadCalled, uint32(5))
 	})
 
 	t.Run("Accepts incoming pings and responds to them", func(t *testing.T) {
 		g := NewWithT(t)
 
 		// Continuously accept pings for some time
-		ctx, cancel := context.WithTimeout(context.Background(), pingInterval*5)
+		ctx, cancel := context.WithTimeout(context.Background(), pingInterval*6)
 		defer cancel()
 
 		stream := &mocks.MockStreamForReceivingPings{
-			SleepBeforeReads: time.Millisecond * 50, // Receive pings every 50 ms
+			SleepBeforeReads: pingInterval,
 		}
 		go func() {
 			g.Expect(pinger.AcceptPings(ctx, stream)).To(Succeed())
@@ -50,6 +50,6 @@ func TestPinger(t *testing.T) {
 		time.Sleep(stream.SleepBeforeReads * 6)
 
 		assert.GreaterOrEqual(t, stream.TimesWriteCalled, uint32(5))
-		assert.LessOrEqual(t, stream.TimesReadCalled, uint32(6))
+		assert.GreaterOrEqual(t, stream.TimesReadCalled, uint32(5))
 	})
 }
