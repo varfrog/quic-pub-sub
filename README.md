@@ -54,7 +54,7 @@ Packages `internal` might not be necessary but they are here to signify (and enf
 
 ### Loggers
 
-Loggers are passed to constructors as arguments, not via [Options](https://github.com/uber-go/guide/blob/master/style.md#functional-options), in order to just save some time.
+Loggers are passed to constructors as arguments, not via [Options](https://github.com/uber-go/guide/blob/master/style.md#functional-options), this is a todo.
 
 ## Testing
 
